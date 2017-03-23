@@ -1,0 +1,26 @@
+class A() 
+{ va := -12; } is
+{ 
+  var va: Integer := 1; /* va etre ecrasee */ 
+}
+
+class B() extends A() 
+{ vb := va + 2; } is 
+{ 
+  var vb: Integer; 
+}
+
+class C() extends B()
+{} is 
+{ 
+  var vc: Integer := 3 + va + vb; 
+}
+
+class D() extends C()
+{} is
+{ 
+  
+}
+
+{
+}

@@ -1,0 +1,27 @@
+class Point(xc: Integer, yc: Integer) { x := xc; y := yc; } is {
+  var x: Integer;
+  var y: Integer;
+  var name: String := "?";
+
+  def id() : Point :=  this
+
+  def setName(s: String) is {
+      this.name := s;
+  }
+
+  def print() is {
+      "Inside Point::print".println();
+      /* Exemples avec l'operateur & de concatenation de chaines */
+      name.print();
+      ( "= (" & x.toString() & ", " & y.toString() & ")" ).println();
+  }
+
+}
+{ 
+  var p1: Point := new Point(1, 5);
+  var p2: Point := new Point(2, 3);
+  is
+  p2.setName("glop");
+  p1.print();
+  p2.print();
+}

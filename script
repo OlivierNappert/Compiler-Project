@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for file in test/*
+do
+  ./tp -v "$file"
+done

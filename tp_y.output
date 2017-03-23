@@ -1,0 +1,1883 @@
+Grammaire
+
+    0 $accept: Prog $end
+
+    1 Prog: classLOpt block
+
+    2 classLOpt: listClass
+    3          | %empty
+
+    4 listClass: declClass listClass
+    5          | declClass
+
+    6 declClass: CLASS TYPE '(' listParamDeclOpt ')' extendsOpt blockOpt IS '{' listDeclChampsOpt listDeclMethodeOpt '}'
+
+    7 listParamDeclOpt: listParamDecl
+    8                 | %empty
+
+    9 listParamDecl: Id ':' TYPE ',' listParamDecl
+   10              | Id ':' TYPE
+
+   11 listParamOpt: listParam
+   12             | %empty
+
+   13 listParam: expression ',' listParam
+   14          | expression
+
+   15 extendsOpt: EXTENDS TYPE '(' listParamOpt ')'
+   16           | %empty
+
+   17 blockOpt: block
+   18         | %empty
+
+   19 listDeclChampsOpt: listDeclChamps
+   20                  | %empty
+
+   21 listDeclChamps: declChamp listDeclChamps
+   22               | declChamp
+
+   23 declChamp: VAR Id ':' TYPE AFFOpt ';'
+
+   24 AFFOpt: AFF expression
+   25       | %empty
+
+   26 listDeclMethodeOpt: listDeclMethode
+   27                   | %empty
+
+   28 listDeclMethode: declMethode listDeclMethode
+   29                | declMethode
+
+   30 declMethode: overrideOpt DEF Id '(' listParamDeclOpt ')' ':' TYPE AFF expression
+   31            | overrideOpt DEF Id '(' listParamDeclOpt ')' returnOpt IS block
+
+   32 overrideOpt: OVERRIDE
+   33            | %empty
+
+   34 returnOpt: ':' TYPE
+   35          | %empty
+
+   36 block: '{' listInstructionsOpt '}'
+   37      | '{' listDeclChamps IS listInstructions '}'
+
+   38 listInstructionsOpt: listInstructions
+   39                    | %empty
+
+   40 listInstructions: instruction listInstructions
+   41                 | instruction
+
+   42 instruction: expression ';'
+   43            | IF expression THEN instruction ELSE instruction
+   44            | block
+   45            | RETURN ';'
+   46            | cible AFF expression ';'
+
+   47 expression: Identificateur
+   48           | Cste
+   49           | selection
+   50           | '(' expression ')'
+   51           | '(' AS TYPE ':' expression ')'
+   52           | instanciation
+   53           | sendMessage
+   54           | expression RelOp expression
+   55           | expression ADD expression
+   56           | expression SUB expression
+   57           | expression MUL expression
+   58           | expression QUO expression
+   59           | expression CONC expression
+   60           | ADD expression
+   61           | SUB expression
+   62           | LITSTR
+
+   63 Identificateur: Id
+   64               | THIS
+   65               | SUPER
+   66               | RESULT
+
+   67 selection: expression '.' Id
+
+   68 cible: Identificateur
+   69      | selection
+
+   70 instanciation: NEW2 TYPE '(' listParamOpt ')'
+
+   71 sendMessage: expression '.' idMethode
+
+   72 idMethode: Id '(' listParamOpt ')'
+
+
+Terminaux, suivis des règles où ils apparaissent
+
+$end (0) 0
+'(' (40) 6 15 30 31 50 51 70 72
+')' (41) 6 15 30 31 50 51 70 72
+',' (44) 9 13
+'.' (46) 67 71
+':' (58) 9 10 23 30 34 51
+';' (59) 23 42 45 46
+'{' (123) 6 36 37
+'}' (125) 6 36 37
+error (256)
+IS (258) 6 31 37
+CLASS (259) 6
+VAR (260) 23
+EXTENDS (261) 15
+DEF (262) 30 31
+OVERRIDE (263) 32
+RETURN (264) 45
+AS (265) 51
+IF (266) 43
+THEN (267) 43
+ELSE (268) 43
+AFF (269) 24 30 46
+ADD (270) 55 60
+SUB (271) 56 61
+CONC (272) 59
+MUL (273) 57
+QUO (274) 58
+NEW2 (275) 70
+THIS (276) 64
+SUPER (277) 65
+RESULT (278) 66
+Id (279) 9 10 23 30 31 63 67 72
+LITSTR (280) 62
+TYPE (281) 6 9 10 15 23 30 34 51 70
+Cste (282) 48
+RelOp (283) 54
+unary (284)
+
+
+Non-terminaux, suivis des règles où ils apparaissent
+
+$accept (38)
+    à gauche: 0
+Prog (39)
+    à gauche: 1, à droite: 0
+classLOpt (40)
+    à gauche: 2 3, à droite: 1
+listClass (41)
+    à gauche: 4 5, à droite: 2 4
+declClass (42)
+    à gauche: 6, à droite: 4 5
+listParamDeclOpt (43)
+    à gauche: 7 8, à droite: 6 30 31
+listParamDecl (44)
+    à gauche: 9 10, à droite: 7 9
+listParamOpt (45)
+    à gauche: 11 12, à droite: 15 70 72
+listParam (46)
+    à gauche: 13 14, à droite: 11 13
+extendsOpt (47)
+    à gauche: 15 16, à droite: 6
+blockOpt (48)
+    à gauche: 17 18, à droite: 6
+listDeclChampsOpt (49)
+    à gauche: 19 20, à droite: 6
+listDeclChamps (50)
+    à gauche: 21 22, à droite: 19 21 37
+declChamp (51)
+    à gauche: 23, à droite: 21 22
+AFFOpt (52)
+    à gauche: 24 25, à droite: 23
+listDeclMethodeOpt (53)
+    à gauche: 26 27, à droite: 6
+listDeclMethode (54)
+    à gauche: 28 29, à droite: 26 28
+declMethode (55)
+    à gauche: 30 31, à droite: 28 29
+overrideOpt (56)
+    à gauche: 32 33, à droite: 30 31
+returnOpt (57)
+    à gauche: 34 35, à droite: 31
+block (58)
+    à gauche: 36 37, à droite: 1 17 31 44
+listInstructionsOpt (59)
+    à gauche: 38 39, à droite: 36
+listInstructions (60)
+    à gauche: 40 41, à droite: 37 38 40
+instruction (61)
+    à gauche: 42 43 44 45 46, à droite: 40 41 43
+expression (62)
+    à gauche: 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62, à droite:
+    13 14 24 30 42 43 46 50 51 54 55 56 57 58 59 60 61 67 71
+Identificateur (63)
+    à gauche: 63 64 65 66, à droite: 47 68
+selection (64)
+    à gauche: 67, à droite: 49 69
+cible (65)
+    à gauche: 68 69, à droite: 46
+instanciation (66)
+    à gauche: 70, à droite: 52
+sendMessage (67)
+    à gauche: 71, à droite: 53
+idMethode (68)
+    à gauche: 72, à droite: 71
+
+
+État 0
+
+    0 $accept: . Prog $end
+
+    CLASS  décalage et aller à l'état 1
+
+    $défaut  réduction par utilisation de la règle 3 (classLOpt)
+
+    Prog       aller à l'état 2
+    classLOpt  aller à l'état 3
+    listClass  aller à l'état 4
+    declClass  aller à l'état 5
+
+
+État 1
+
+    6 declClass: CLASS . TYPE '(' listParamDeclOpt ')' extendsOpt blockOpt IS '{' listDeclChampsOpt listDeclMethodeOpt '}'
+
+    TYPE  décalage et aller à l'état 6
+
+
+État 2
+
+    0 $accept: Prog . $end
+
+    $end  décalage et aller à l'état 7
+
+
+État 3
+
+    1 Prog: classLOpt . block
+
+    '{'  décalage et aller à l'état 8
+
+    block  aller à l'état 9
+
+
+État 4
+
+    2 classLOpt: listClass .
+
+    $défaut  réduction par utilisation de la règle 2 (classLOpt)
+
+
+État 5
+
+    4 listClass: declClass . listClass
+    5          | declClass .
+
+    CLASS  décalage et aller à l'état 1
+
+    $défaut  réduction par utilisation de la règle 5 (listClass)
+
+    listClass  aller à l'état 10
+    declClass  aller à l'état 5
+
+
+État 6
+
+    6 declClass: CLASS TYPE . '(' listParamDeclOpt ')' extendsOpt blockOpt IS '{' listDeclChampsOpt listDeclMethodeOpt '}'
+
+    '('  décalage et aller à l'état 11
+
+
+État 7
+
+    0 $accept: Prog $end .
+
+    $défaut  accepter
+
+
+État 8
+
+   36 block: '{' . listInstructionsOpt '}'
+   37      | '{' . listDeclChamps IS listInstructions '}'
+
+    VAR     décalage et aller à l'état 12
+    RETURN  décalage et aller à l'état 13
+    IF      décalage et aller à l'état 14
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+    '{'     décalage et aller à l'état 8
+
+    $défaut  réduction par utilisation de la règle 39 (listInstructionsOpt)
+
+    listDeclChamps       aller à l'état 25
+    declChamp            aller à l'état 26
+    block                aller à l'état 27
+    listInstructionsOpt  aller à l'état 28
+    listInstructions     aller à l'état 29
+    instruction          aller à l'état 30
+    expression           aller à l'état 31
+    Identificateur       aller à l'état 32
+    selection            aller à l'état 33
+    cible                aller à l'état 34
+    instanciation        aller à l'état 35
+    sendMessage          aller à l'état 36
+
+
+État 9
+
+    1 Prog: classLOpt block .
+
+    $défaut  réduction par utilisation de la règle 1 (Prog)
+
+
+État 10
+
+    4 listClass: declClass listClass .
+
+    $défaut  réduction par utilisation de la règle 4 (listClass)
+
+
+État 11
+
+    6 declClass: CLASS TYPE '(' . listParamDeclOpt ')' extendsOpt blockOpt IS '{' listDeclChampsOpt listDeclMethodeOpt '}'
+
+    Id  décalage et aller à l'état 37
+
+    $défaut  réduction par utilisation de la règle 8 (listParamDeclOpt)
+
+    listParamDeclOpt  aller à l'état 38
+    listParamDecl     aller à l'état 39
+
+
+État 12
+
+   23 declChamp: VAR . Id ':' TYPE AFFOpt ';'
+
+    Id  décalage et aller à l'état 40
+
+
+État 13
+
+   45 instruction: RETURN . ';'
+
+    ';'  décalage et aller à l'état 41
+
+
+État 14
+
+   43 instruction: IF . expression THEN instruction ELSE instruction
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 42
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 15
+
+   60 expression: ADD . expression
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 45
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 16
+
+   61 expression: SUB . expression
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 46
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 17
+
+   70 instanciation: NEW2 . TYPE '(' listParamOpt ')'
+
+    TYPE  décalage et aller à l'état 47
+
+
+État 18
+
+   64 Identificateur: THIS .
+
+    $défaut  réduction par utilisation de la règle 64 (Identificateur)
+
+
+État 19
+
+   65 Identificateur: SUPER .
+
+    $défaut  réduction par utilisation de la règle 65 (Identificateur)
+
+
+État 20
+
+   66 Identificateur: RESULT .
+
+    $défaut  réduction par utilisation de la règle 66 (Identificateur)
+
+
+État 21
+
+   63 Identificateur: Id .
+
+    $défaut  réduction par utilisation de la règle 63 (Identificateur)
+
+
+État 22
+
+   62 expression: LITSTR .
+
+    $défaut  réduction par utilisation de la règle 62 (expression)
+
+
+État 23
+
+   48 expression: Cste .
+
+    $défaut  réduction par utilisation de la règle 48 (expression)
+
+
+État 24
+
+   50 expression: '(' . expression ')'
+   51           | '(' . AS TYPE ':' expression ')'
+
+    AS      décalage et aller à l'état 48
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 49
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 25
+
+   37 block: '{' listDeclChamps . IS listInstructions '}'
+
+    IS  décalage et aller à l'état 50
+
+
+État 26
+
+   21 listDeclChamps: declChamp . listDeclChamps
+   22               | declChamp .
+
+    VAR  décalage et aller à l'état 12
+
+    $défaut  réduction par utilisation de la règle 22 (listDeclChamps)
+
+    listDeclChamps  aller à l'état 51
+    declChamp       aller à l'état 26
+
+
+État 27
+
+   44 instruction: block .
+
+    $défaut  réduction par utilisation de la règle 44 (instruction)
+
+
+État 28
+
+   36 block: '{' listInstructionsOpt . '}'
+
+    '}'  décalage et aller à l'état 52
+
+
+État 29
+
+   38 listInstructionsOpt: listInstructions .
+
+    $défaut  réduction par utilisation de la règle 38 (listInstructionsOpt)
+
+
+État 30
+
+   40 listInstructions: instruction . listInstructions
+   41                 | instruction .
+
+    RETURN  décalage et aller à l'état 13
+    IF      décalage et aller à l'état 14
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+    '{'     décalage et aller à l'état 8
+
+    $défaut  réduction par utilisation de la règle 41 (listInstructions)
+
+    block             aller à l'état 27
+    listInstructions  aller à l'état 53
+    instruction       aller à l'état 30
+    expression        aller à l'état 31
+    Identificateur    aller à l'état 32
+    selection         aller à l'état 33
+    cible             aller à l'état 34
+    instanciation     aller à l'état 35
+    sendMessage       aller à l'état 36
+
+
+État 31
+
+   42 instruction: expression . ';'
+   54 expression: expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    ADD    décalage et aller à l'état 54
+    SUB    décalage et aller à l'état 55
+    CONC   décalage et aller à l'état 56
+    MUL    décalage et aller à l'état 57
+    QUO    décalage et aller à l'état 58
+    RelOp  décalage et aller à l'état 59
+    '.'    décalage et aller à l'état 60
+    ';'    décalage et aller à l'état 61
+
+
+État 32
+
+   47 expression: Identificateur .
+   68 cible: Identificateur .
+
+    AFF       réduction par utilisation de la règle 68 (cible)
+    $défaut  réduction par utilisation de la règle 47 (expression)
+
+
+État 33
+
+   49 expression: selection .
+   69 cible: selection .
+
+    AFF       réduction par utilisation de la règle 69 (cible)
+    $défaut  réduction par utilisation de la règle 49 (expression)
+
+
+État 34
+
+   46 instruction: cible . AFF expression ';'
+
+    AFF  décalage et aller à l'état 62
+
+
+État 35
+
+   52 expression: instanciation .
+
+    $défaut  réduction par utilisation de la règle 52 (expression)
+
+
+État 36
+
+   53 expression: sendMessage .
+
+    $défaut  réduction par utilisation de la règle 53 (expression)
+
+
+État 37
+
+    9 listParamDecl: Id . ':' TYPE ',' listParamDecl
+   10              | Id . ':' TYPE
+
+    ':'  décalage et aller à l'état 63
+
+
+État 38
+
+    6 declClass: CLASS TYPE '(' listParamDeclOpt . ')' extendsOpt blockOpt IS '{' listDeclChampsOpt listDeclMethodeOpt '}'
+
+    ')'  décalage et aller à l'état 64
+
+
+État 39
+
+    7 listParamDeclOpt: listParamDecl .
+
+    $défaut  réduction par utilisation de la règle 7 (listParamDeclOpt)
+
+
+État 40
+
+   23 declChamp: VAR Id . ':' TYPE AFFOpt ';'
+
+    ':'  décalage et aller à l'état 65
+
+
+État 41
+
+   45 instruction: RETURN ';' .
+
+    $défaut  réduction par utilisation de la règle 45 (instruction)
+
+
+État 42
+
+   43 instruction: IF expression . THEN instruction ELSE instruction
+   54 expression: expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    THEN   décalage et aller à l'état 66
+    ADD    décalage et aller à l'état 54
+    SUB    décalage et aller à l'état 55
+    CONC   décalage et aller à l'état 56
+    MUL    décalage et aller à l'état 57
+    QUO    décalage et aller à l'état 58
+    RelOp  décalage et aller à l'état 59
+    '.'    décalage et aller à l'état 60
+
+
+État 43
+
+   47 expression: Identificateur .
+
+    $défaut  réduction par utilisation de la règle 47 (expression)
+
+
+État 44
+
+   49 expression: selection .
+
+    $défaut  réduction par utilisation de la règle 49 (expression)
+
+
+État 45
+
+   54 expression: expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   60           | ADD expression .
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    '.'  décalage et aller à l'état 60
+
+    $défaut  réduction par utilisation de la règle 60 (expression)
+
+
+État 46
+
+   54 expression: expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   61           | SUB expression .
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    '.'  décalage et aller à l'état 60
+
+    $défaut  réduction par utilisation de la règle 61 (expression)
+
+
+État 47
+
+   70 instanciation: NEW2 TYPE . '(' listParamOpt ')'
+
+    '('  décalage et aller à l'état 67
+
+
+État 48
+
+   51 expression: '(' AS . TYPE ':' expression ')'
+
+    TYPE  décalage et aller à l'état 68
+
+
+État 49
+
+   50 expression: '(' expression . ')'
+   54           | expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    ADD    décalage et aller à l'état 54
+    SUB    décalage et aller à l'état 55
+    CONC   décalage et aller à l'état 56
+    MUL    décalage et aller à l'état 57
+    QUO    décalage et aller à l'état 58
+    RelOp  décalage et aller à l'état 59
+    '.'    décalage et aller à l'état 60
+    ')'    décalage et aller à l'état 69
+
+
+État 50
+
+   37 block: '{' listDeclChamps IS . listInstructions '}'
+
+    RETURN  décalage et aller à l'état 13
+    IF      décalage et aller à l'état 14
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+    '{'     décalage et aller à l'état 8
+
+    block             aller à l'état 27
+    listInstructions  aller à l'état 70
+    instruction       aller à l'état 30
+    expression        aller à l'état 31
+    Identificateur    aller à l'état 32
+    selection         aller à l'état 33
+    cible             aller à l'état 34
+    instanciation     aller à l'état 35
+    sendMessage       aller à l'état 36
+
+
+État 51
+
+   21 listDeclChamps: declChamp listDeclChamps .
+
+    $défaut  réduction par utilisation de la règle 21 (listDeclChamps)
+
+
+État 52
+
+   36 block: '{' listInstructionsOpt '}' .
+
+    $défaut  réduction par utilisation de la règle 36 (block)
+
+
+État 53
+
+   40 listInstructions: instruction listInstructions .
+
+    $défaut  réduction par utilisation de la règle 40 (listInstructions)
+
+
+État 54
+
+   55 expression: expression ADD . expression
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 71
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 55
+
+   56 expression: expression SUB . expression
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 72
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 56
+
+   59 expression: expression CONC . expression
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 73
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 57
+
+   57 expression: expression MUL . expression
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 74
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 58
+
+   58 expression: expression QUO . expression
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 75
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 59
+
+   54 expression: expression RelOp . expression
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 76
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 60
+
+   67 selection: expression '.' . Id
+   71 sendMessage: expression '.' . idMethode
+
+    Id  décalage et aller à l'état 77
+
+    idMethode  aller à l'état 78
+
+
+État 61
+
+   42 instruction: expression ';' .
+
+    $défaut  réduction par utilisation de la règle 42 (instruction)
+
+
+État 62
+
+   46 instruction: cible AFF . expression ';'
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 79
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 63
+
+    9 listParamDecl: Id ':' . TYPE ',' listParamDecl
+   10              | Id ':' . TYPE
+
+    TYPE  décalage et aller à l'état 80
+
+
+État 64
+
+    6 declClass: CLASS TYPE '(' listParamDeclOpt ')' . extendsOpt blockOpt IS '{' listDeclChampsOpt listDeclMethodeOpt '}'
+
+    EXTENDS  décalage et aller à l'état 81
+
+    $défaut  réduction par utilisation de la règle 16 (extendsOpt)
+
+    extendsOpt  aller à l'état 82
+
+
+État 65
+
+   23 declChamp: VAR Id ':' . TYPE AFFOpt ';'
+
+    TYPE  décalage et aller à l'état 83
+
+
+État 66
+
+   43 instruction: IF expression THEN . instruction ELSE instruction
+
+    RETURN  décalage et aller à l'état 13
+    IF      décalage et aller à l'état 14
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+    '{'     décalage et aller à l'état 8
+
+    block           aller à l'état 27
+    instruction     aller à l'état 84
+    expression      aller à l'état 31
+    Identificateur  aller à l'état 32
+    selection       aller à l'état 33
+    cible           aller à l'état 34
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 67
+
+   70 instanciation: NEW2 TYPE '(' . listParamOpt ')'
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    $défaut  réduction par utilisation de la règle 12 (listParamOpt)
+
+    listParamOpt    aller à l'état 85
+    listParam       aller à l'état 86
+    expression      aller à l'état 87
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 68
+
+   51 expression: '(' AS TYPE . ':' expression ')'
+
+    ':'  décalage et aller à l'état 88
+
+
+État 69
+
+   50 expression: '(' expression ')' .
+
+    $défaut  réduction par utilisation de la règle 50 (expression)
+
+
+État 70
+
+   37 block: '{' listDeclChamps IS listInstructions . '}'
+
+    '}'  décalage et aller à l'état 89
+
+
+État 71
+
+   54 expression: expression . RelOp expression
+   55           | expression . ADD expression
+   55           | expression ADD expression .
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    MUL  décalage et aller à l'état 57
+    QUO  décalage et aller à l'état 58
+    '.'  décalage et aller à l'état 60
+
+    $défaut  réduction par utilisation de la règle 55 (expression)
+
+
+État 72
+
+   54 expression: expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   56           | expression SUB expression .
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    MUL  décalage et aller à l'état 57
+    QUO  décalage et aller à l'état 58
+    '.'  décalage et aller à l'état 60
+
+    $défaut  réduction par utilisation de la règle 56 (expression)
+
+
+État 73
+
+   54 expression: expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   59           | expression CONC expression .
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    MUL  décalage et aller à l'état 57
+    QUO  décalage et aller à l'état 58
+    '.'  décalage et aller à l'état 60
+
+    $défaut  réduction par utilisation de la règle 59 (expression)
+
+
+État 74
+
+   54 expression: expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   57           | expression MUL expression .
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    '.'  décalage et aller à l'état 60
+
+    $défaut  réduction par utilisation de la règle 57 (expression)
+
+
+État 75
+
+   54 expression: expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   58           | expression QUO expression .
+   59           | expression . CONC expression
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    '.'  décalage et aller à l'état 60
+
+    $défaut  réduction par utilisation de la règle 58 (expression)
+
+
+État 76
+
+   54 expression: expression . RelOp expression
+   54           | expression RelOp expression .
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    ADD   décalage et aller à l'état 54
+    SUB   décalage et aller à l'état 55
+    CONC  décalage et aller à l'état 56
+    MUL   décalage et aller à l'état 57
+    QUO   décalage et aller à l'état 58
+    '.'   décalage et aller à l'état 60
+
+    $défaut  réduction par utilisation de la règle 54 (expression)
+
+
+État 77
+
+   67 selection: expression '.' Id .
+   72 idMethode: Id . '(' listParamOpt ')'
+
+    '('  décalage et aller à l'état 90
+
+    $défaut  réduction par utilisation de la règle 67 (selection)
+
+
+État 78
+
+   71 sendMessage: expression '.' idMethode .
+
+    $défaut  réduction par utilisation de la règle 71 (sendMessage)
+
+
+État 79
+
+   46 instruction: cible AFF expression . ';'
+   54 expression: expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    ADD    décalage et aller à l'état 54
+    SUB    décalage et aller à l'état 55
+    CONC   décalage et aller à l'état 56
+    MUL    décalage et aller à l'état 57
+    QUO    décalage et aller à l'état 58
+    RelOp  décalage et aller à l'état 59
+    '.'    décalage et aller à l'état 60
+    ';'    décalage et aller à l'état 91
+
+
+État 80
+
+    9 listParamDecl: Id ':' TYPE . ',' listParamDecl
+   10              | Id ':' TYPE .
+
+    ','  décalage et aller à l'état 92
+
+    $défaut  réduction par utilisation de la règle 10 (listParamDecl)
+
+
+État 81
+
+   15 extendsOpt: EXTENDS . TYPE '(' listParamOpt ')'
+
+    TYPE  décalage et aller à l'état 93
+
+
+État 82
+
+    6 declClass: CLASS TYPE '(' listParamDeclOpt ')' extendsOpt . blockOpt IS '{' listDeclChampsOpt listDeclMethodeOpt '}'
+
+    '{'  décalage et aller à l'état 8
+
+    $défaut  réduction par utilisation de la règle 18 (blockOpt)
+
+    blockOpt  aller à l'état 94
+    block     aller à l'état 95
+
+
+État 83
+
+   23 declChamp: VAR Id ':' TYPE . AFFOpt ';'
+
+    AFF  décalage et aller à l'état 96
+
+    $défaut  réduction par utilisation de la règle 25 (AFFOpt)
+
+    AFFOpt  aller à l'état 97
+
+
+État 84
+
+   43 instruction: IF expression THEN instruction . ELSE instruction
+
+    ELSE  décalage et aller à l'état 98
+
+
+État 85
+
+   70 instanciation: NEW2 TYPE '(' listParamOpt . ')'
+
+    ')'  décalage et aller à l'état 99
+
+
+État 86
+
+   11 listParamOpt: listParam .
+
+    $défaut  réduction par utilisation de la règle 11 (listParamOpt)
+
+
+État 87
+
+   13 listParam: expression . ',' listParam
+   14          | expression .
+   54 expression: expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    ADD    décalage et aller à l'état 54
+    SUB    décalage et aller à l'état 55
+    CONC   décalage et aller à l'état 56
+    MUL    décalage et aller à l'état 57
+    QUO    décalage et aller à l'état 58
+    RelOp  décalage et aller à l'état 59
+    '.'    décalage et aller à l'état 60
+    ','    décalage et aller à l'état 100
+
+    $défaut  réduction par utilisation de la règle 14 (listParam)
+
+
+État 88
+
+   51 expression: '(' AS TYPE ':' . expression ')'
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 101
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 89
+
+   37 block: '{' listDeclChamps IS listInstructions '}' .
+
+    $défaut  réduction par utilisation de la règle 37 (block)
+
+
+État 90
+
+   72 idMethode: Id '(' . listParamOpt ')'
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    $défaut  réduction par utilisation de la règle 12 (listParamOpt)
+
+    listParamOpt    aller à l'état 102
+    listParam       aller à l'état 86
+    expression      aller à l'état 87
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 91
+
+   46 instruction: cible AFF expression ';' .
+
+    $défaut  réduction par utilisation de la règle 46 (instruction)
+
+
+État 92
+
+    9 listParamDecl: Id ':' TYPE ',' . listParamDecl
+
+    Id  décalage et aller à l'état 37
+
+    listParamDecl  aller à l'état 103
+
+
+État 93
+
+   15 extendsOpt: EXTENDS TYPE . '(' listParamOpt ')'
+
+    '('  décalage et aller à l'état 104
+
+
+État 94
+
+    6 declClass: CLASS TYPE '(' listParamDeclOpt ')' extendsOpt blockOpt . IS '{' listDeclChampsOpt listDeclMethodeOpt '}'
+
+    IS  décalage et aller à l'état 105
+
+
+État 95
+
+   17 blockOpt: block .
+
+    $défaut  réduction par utilisation de la règle 17 (blockOpt)
+
+
+État 96
+
+   24 AFFOpt: AFF . expression
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 106
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 97
+
+   23 declChamp: VAR Id ':' TYPE AFFOpt . ';'
+
+    ';'  décalage et aller à l'état 107
+
+
+État 98
+
+   43 instruction: IF expression THEN instruction ELSE . instruction
+
+    RETURN  décalage et aller à l'état 13
+    IF      décalage et aller à l'état 14
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+    '{'     décalage et aller à l'état 8
+
+    block           aller à l'état 27
+    instruction     aller à l'état 108
+    expression      aller à l'état 31
+    Identificateur  aller à l'état 32
+    selection       aller à l'état 33
+    cible           aller à l'état 34
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 99
+
+   70 instanciation: NEW2 TYPE '(' listParamOpt ')' .
+
+    $défaut  réduction par utilisation de la règle 70 (instanciation)
+
+
+État 100
+
+   13 listParam: expression ',' . listParam
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    listParam       aller à l'état 109
+    expression      aller à l'état 87
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 101
+
+   51 expression: '(' AS TYPE ':' expression . ')'
+   54           | expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    ADD    décalage et aller à l'état 54
+    SUB    décalage et aller à l'état 55
+    CONC   décalage et aller à l'état 56
+    MUL    décalage et aller à l'état 57
+    QUO    décalage et aller à l'état 58
+    RelOp  décalage et aller à l'état 59
+    '.'    décalage et aller à l'état 60
+    ')'    décalage et aller à l'état 110
+
+
+État 102
+
+   72 idMethode: Id '(' listParamOpt . ')'
+
+    ')'  décalage et aller à l'état 111
+
+
+État 103
+
+    9 listParamDecl: Id ':' TYPE ',' listParamDecl .
+
+    $défaut  réduction par utilisation de la règle 9 (listParamDecl)
+
+
+État 104
+
+   15 extendsOpt: EXTENDS TYPE '(' . listParamOpt ')'
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    $défaut  réduction par utilisation de la règle 12 (listParamOpt)
+
+    listParamOpt    aller à l'état 112
+    listParam       aller à l'état 86
+    expression      aller à l'état 87
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 105
+
+    6 declClass: CLASS TYPE '(' listParamDeclOpt ')' extendsOpt blockOpt IS . '{' listDeclChampsOpt listDeclMethodeOpt '}'
+
+    '{'  décalage et aller à l'état 113
+
+
+État 106
+
+   24 AFFOpt: AFF expression .
+   54 expression: expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    ADD    décalage et aller à l'état 54
+    SUB    décalage et aller à l'état 55
+    CONC   décalage et aller à l'état 56
+    MUL    décalage et aller à l'état 57
+    QUO    décalage et aller à l'état 58
+    RelOp  décalage et aller à l'état 59
+    '.'    décalage et aller à l'état 60
+
+    $défaut  réduction par utilisation de la règle 24 (AFFOpt)
+
+
+État 107
+
+   23 declChamp: VAR Id ':' TYPE AFFOpt ';' .
+
+    $défaut  réduction par utilisation de la règle 23 (declChamp)
+
+
+État 108
+
+   43 instruction: IF expression THEN instruction ELSE instruction .
+
+    $défaut  réduction par utilisation de la règle 43 (instruction)
+
+
+État 109
+
+   13 listParam: expression ',' listParam .
+
+    $défaut  réduction par utilisation de la règle 13 (listParam)
+
+
+État 110
+
+   51 expression: '(' AS TYPE ':' expression ')' .
+
+    $défaut  réduction par utilisation de la règle 51 (expression)
+
+
+État 111
+
+   72 idMethode: Id '(' listParamOpt ')' .
+
+    $défaut  réduction par utilisation de la règle 72 (idMethode)
+
+
+État 112
+
+   15 extendsOpt: EXTENDS TYPE '(' listParamOpt . ')'
+
+    ')'  décalage et aller à l'état 114
+
+
+État 113
+
+    6 declClass: CLASS TYPE '(' listParamDeclOpt ')' extendsOpt blockOpt IS '{' . listDeclChampsOpt listDeclMethodeOpt '}'
+
+    VAR  décalage et aller à l'état 12
+
+    $défaut  réduction par utilisation de la règle 20 (listDeclChampsOpt)
+
+    listDeclChampsOpt  aller à l'état 115
+    listDeclChamps     aller à l'état 116
+    declChamp          aller à l'état 26
+
+
+État 114
+
+   15 extendsOpt: EXTENDS TYPE '(' listParamOpt ')' .
+
+    $défaut  réduction par utilisation de la règle 15 (extendsOpt)
+
+
+État 115
+
+    6 declClass: CLASS TYPE '(' listParamDeclOpt ')' extendsOpt blockOpt IS '{' listDeclChampsOpt . listDeclMethodeOpt '}'
+
+    OVERRIDE  décalage et aller à l'état 117
+
+    DEF       réduction par utilisation de la règle 33 (overrideOpt)
+    $défaut  réduction par utilisation de la règle 27 (listDeclMethodeOpt)
+
+    listDeclMethodeOpt  aller à l'état 118
+    listDeclMethode     aller à l'état 119
+    declMethode         aller à l'état 120
+    overrideOpt         aller à l'état 121
+
+
+État 116
+
+   19 listDeclChampsOpt: listDeclChamps .
+
+    $défaut  réduction par utilisation de la règle 19 (listDeclChampsOpt)
+
+
+État 117
+
+   32 overrideOpt: OVERRIDE .
+
+    $défaut  réduction par utilisation de la règle 32 (overrideOpt)
+
+
+État 118
+
+    6 declClass: CLASS TYPE '(' listParamDeclOpt ')' extendsOpt blockOpt IS '{' listDeclChampsOpt listDeclMethodeOpt . '}'
+
+    '}'  décalage et aller à l'état 122
+
+
+État 119
+
+   26 listDeclMethodeOpt: listDeclMethode .
+
+    $défaut  réduction par utilisation de la règle 26 (listDeclMethodeOpt)
+
+
+État 120
+
+   28 listDeclMethode: declMethode . listDeclMethode
+   29                | declMethode .
+
+    OVERRIDE  décalage et aller à l'état 117
+
+    DEF       réduction par utilisation de la règle 33 (overrideOpt)
+    $défaut  réduction par utilisation de la règle 29 (listDeclMethode)
+
+    listDeclMethode  aller à l'état 123
+    declMethode      aller à l'état 120
+    overrideOpt      aller à l'état 121
+
+
+État 121
+
+   30 declMethode: overrideOpt . DEF Id '(' listParamDeclOpt ')' ':' TYPE AFF expression
+   31            | overrideOpt . DEF Id '(' listParamDeclOpt ')' returnOpt IS block
+
+    DEF  décalage et aller à l'état 124
+
+
+État 122
+
+    6 declClass: CLASS TYPE '(' listParamDeclOpt ')' extendsOpt blockOpt IS '{' listDeclChampsOpt listDeclMethodeOpt '}' .
+
+    $défaut  réduction par utilisation de la règle 6 (declClass)
+
+
+État 123
+
+   28 listDeclMethode: declMethode listDeclMethode .
+
+    $défaut  réduction par utilisation de la règle 28 (listDeclMethode)
+
+
+État 124
+
+   30 declMethode: overrideOpt DEF . Id '(' listParamDeclOpt ')' ':' TYPE AFF expression
+   31            | overrideOpt DEF . Id '(' listParamDeclOpt ')' returnOpt IS block
+
+    Id  décalage et aller à l'état 125
+
+
+État 125
+
+   30 declMethode: overrideOpt DEF Id . '(' listParamDeclOpt ')' ':' TYPE AFF expression
+   31            | overrideOpt DEF Id . '(' listParamDeclOpt ')' returnOpt IS block
+
+    '('  décalage et aller à l'état 126
+
+
+État 126
+
+   30 declMethode: overrideOpt DEF Id '(' . listParamDeclOpt ')' ':' TYPE AFF expression
+   31            | overrideOpt DEF Id '(' . listParamDeclOpt ')' returnOpt IS block
+
+    Id  décalage et aller à l'état 37
+
+    $défaut  réduction par utilisation de la règle 8 (listParamDeclOpt)
+
+    listParamDeclOpt  aller à l'état 127
+    listParamDecl     aller à l'état 39
+
+
+État 127
+
+   30 declMethode: overrideOpt DEF Id '(' listParamDeclOpt . ')' ':' TYPE AFF expression
+   31            | overrideOpt DEF Id '(' listParamDeclOpt . ')' returnOpt IS block
+
+    ')'  décalage et aller à l'état 128
+
+
+État 128
+
+   30 declMethode: overrideOpt DEF Id '(' listParamDeclOpt ')' . ':' TYPE AFF expression
+   31            | overrideOpt DEF Id '(' listParamDeclOpt ')' . returnOpt IS block
+
+    ':'  décalage et aller à l'état 129
+
+    $défaut  réduction par utilisation de la règle 35 (returnOpt)
+
+    returnOpt  aller à l'état 130
+
+
+État 129
+
+   30 declMethode: overrideOpt DEF Id '(' listParamDeclOpt ')' ':' . TYPE AFF expression
+   34 returnOpt: ':' . TYPE
+
+    TYPE  décalage et aller à l'état 131
+
+
+État 130
+
+   31 declMethode: overrideOpt DEF Id '(' listParamDeclOpt ')' returnOpt . IS block
+
+    IS  décalage et aller à l'état 132
+
+
+État 131
+
+   30 declMethode: overrideOpt DEF Id '(' listParamDeclOpt ')' ':' TYPE . AFF expression
+   34 returnOpt: ':' TYPE .
+
+    AFF  décalage et aller à l'état 133
+
+    $défaut  réduction par utilisation de la règle 34 (returnOpt)
+
+
+État 132
+
+   31 declMethode: overrideOpt DEF Id '(' listParamDeclOpt ')' returnOpt IS . block
+
+    '{'  décalage et aller à l'état 8
+
+    block  aller à l'état 134
+
+
+État 133
+
+   30 declMethode: overrideOpt DEF Id '(' listParamDeclOpt ')' ':' TYPE AFF . expression
+
+    ADD     décalage et aller à l'état 15
+    SUB     décalage et aller à l'état 16
+    NEW2    décalage et aller à l'état 17
+    THIS    décalage et aller à l'état 18
+    SUPER   décalage et aller à l'état 19
+    RESULT  décalage et aller à l'état 20
+    Id      décalage et aller à l'état 21
+    LITSTR  décalage et aller à l'état 22
+    Cste    décalage et aller à l'état 23
+    '('     décalage et aller à l'état 24
+
+    expression      aller à l'état 135
+    Identificateur  aller à l'état 43
+    selection       aller à l'état 44
+    instanciation   aller à l'état 35
+    sendMessage     aller à l'état 36
+
+
+État 134
+
+   31 declMethode: overrideOpt DEF Id '(' listParamDeclOpt ')' returnOpt IS block .
+
+    $défaut  réduction par utilisation de la règle 31 (declMethode)
+
+
+État 135
+
+   30 declMethode: overrideOpt DEF Id '(' listParamDeclOpt ')' ':' TYPE AFF expression .
+   54 expression: expression . RelOp expression
+   55           | expression . ADD expression
+   56           | expression . SUB expression
+   57           | expression . MUL expression
+   58           | expression . QUO expression
+   59           | expression . CONC expression
+   67 selection: expression . '.' Id
+   71 sendMessage: expression . '.' idMethode
+
+    ADD    décalage et aller à l'état 54
+    SUB    décalage et aller à l'état 55
+    CONC   décalage et aller à l'état 56
+    MUL    décalage et aller à l'état 57
+    QUO    décalage et aller à l'état 58
+    RelOp  décalage et aller à l'état 59
+    '.'    décalage et aller à l'état 60
+
+    $défaut  réduction par utilisation de la règle 30 (declMethode)

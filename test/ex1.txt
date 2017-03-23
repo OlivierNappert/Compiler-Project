@@ -1,0 +1,215 @@
+/* Exemple de programme dans le langage source */
+class Point(xc: Integer, yc: Integer, n: String)
+      { x := xc; y := yc; name := n; } is 
+{
+  var x: Integer;
+  var y: Integer;
+  var name: String;
+
+  def setName(s: String) is { name := s; }
+
+  def getx() : Integer := x      /* avec this implicite */ 
+
+  def gety() : Integer := this.y /* avec this explicite */
+
+  def move(dx: Integer, dy: Integer) : Point is {
+      x := x + dx; y := y + dy; result := this;
+  }
+
+  def verboseMove (dx: Integer, dy: Integer) is {
+      this.move(dx, dy); /* le this est obligatoire */
+      this.print();
+  }
+
+  def print() is {
+      "Inside Point::print".println();
+      /* Exemples avec l'operateur & de concatenation de chaines */
+      name.print();
+      ( "= (" & x.toString() & ", " & y.toString() & ")" ).println();
+  }
+
+  /* par defaut, on ajoute un ' au nom de l'objet. On pourra le changer
+   * avec setName
+   */
+  def clone() : Point := new Point(x, y, this.name & "'")
+
+  def egal(p: Point) : Integer is {
+   /* ils sont egaux s'ils ont memes coordonnees */
+       var b1 : Integer := p.x - x;
+       var b2 : Integer := p.y - y;
+       is if b1 then result := 0; else result := b2 = 0;
+  }
+
+  def egal2(p: Point) : Integer is {  /* autre version */
+    var b1 : Integer := p.x - x;
+    var b2: Integer;
+    is
+    result := 0;
+    if b1 then { return; } else { }
+       b2 := p.y - y;
+       result := b2 = 0;
+  }
+}
+
+
+class Couleur(cinit: Integer) 
+   /* 3 couleurs : couleur = 0, 1 ou autre chose !
+    * Valeur initiale a 0 grace a l'initialisation de l'attribut mais
+    * eventuellement ecrasee par la valeur passee dans le constructeur.
+    */
+  { if cinit = 1 then coul := 1; else if cinit = 2 then coul := 2; else { } }
+  is {
+  var coul: Integer := 0; /* couleur par defaut */
+
+  def blanc() : Couleur := new Couleur(0)
+
+  def noir() : Couleur := new Couleur(1)
+
+  def gris() : Couleur := new Couleur(2)
+
+  def name() : String is {
+      var aux : String;
+      is
+      /* "Inside Couleur::couleur".println(); */
+      if coul = 0 then result:= "Blanc";
+      else { var dummy : String; is 
+             if coul = 1 then aux := "Noir"; else aux := "Gris";
+	     result := aux;
+           }
+  }
+
+  def estGris() : Integer is {
+     "Inside Couleur::estGris".println();
+     result := coul = 2;
+  }
+
+}
+
+
+class PointColore(xc: Integer, yc:Integer, c: Couleur)
+      extends Point(xc, yc, "") { coul := c; } is {  
+  var coul: Couleur;
+
+  def couleur() : Couleur := coul
+
+  def colore() : Integer := coul.estGris() <> 0
+
+  def setCouleur(c: Couleur) is { coul := c; }
+
+  override def clone() : Point /* pas PointColore. Pas de covariance ! */
+       := new PointColore(x, y, coul)
+
+  def estGris() : Integer is {
+      result := coul.estGris();
+  }
+
+  override def print() is {
+      "Inside PointColore::print".println();
+      super.print();  /* usage classique de super */
+      this.couleur().name().println();
+  }
+}
+
+/* les exemples ci-dessous seraient plus simples a ecrire si on disposait
+ * de methodes statiques !
+ */
+class PointNoir(xc: Integer, yc:Integer)
+      extends PointColore(xc, yc, (new Couleur(0)).noir())
+      /* pas de corps de constructeur pour cette classe */
+is {
+  override def estGris() : Integer := 0
+  /* comme on n'a pas de methode statique, on passe par une methode d'instance
+   * et on cree une instance qui ne sert pas a grand chose
+   */
+  override def couleur() : Couleur := (new Couleur(0)).noir()
+}
+
+
+class DefaultPoint() /* Parentheses obligatoires */
+      extends PointColore(0, 0, (new Couleur(0)).blanc())
+is {
+  override def estGris() : Integer := 0
+  override def couleur() : Couleur := (new Couleur(0)).blanc()
+}
+
+class Test() is {
+ 
+ def test(p: Point, p2: PointColore, p3: PointNoir) is {
+      var c: String; var c2: String; var c3: String;
+      is
+      p.print();
+      p2.print();
+      "Appel 1: ".println();
+      if p2.colore() <> 0 then c := "colore";  else c := "gris";
+      "Appel 2: ".println();
+      if p3.colore() <> 0 then c2 := "colore"; else c2 := "gris";
+      "Appel 3: ".println();
+      if p3.colore() <> 0 then c3 := "colore"; else c3 := "gris";
+      "Resultats de test: ".println();
+      c.print(); " ".print();
+      c2.print(); " ".print();
+      c3.print();
+      "".println();
+  }
+
+  def test2(p: PointColore) is { 
+      p.couleur().name().print(); 
+  }
+}
+
+/* des exemples ad-hoc qui montrent d'autres aspects ... */
+class A() is {
+  var v : Integer := 1;
+  def f() is { "A::f()\"n".print(); }
+}
+
+class A2() extends A() is {
+  var v : String := "hello"; /* masque le champ v de la classe A */
+
+  override def f() is { "A2::f()\"n".print(); }
+
+  def g() is {
+      v := "world"; /* par defaut, il s'agit du champ de A2 */
+      /* this etant caste en A, le champ v en question est celui de A */
+      (as A: this).v := 1;
+      /* les deux appels doivent fournir la meme chose */
+      this.f();
+      (as A : this).f();
+  }
+}
+
+{ /* Bloc qui correspond au programme principal */ 
+  var p1: Point := new Point(1, 5, "p1");
+  var p2: Point := new Point(2, 3, "p2");
+  var o : PointColore := new PointColore(0, 0, (new Couleur(0)).blanc());
+  var pn : PointNoir := new PointNoir(+1, -1);
+  var dp : DefaultPoint := new DefaultPoint();
+  var unTest: Test := new Test();
+is
+  p2.move(p1.getx(), p1.gety());
+  o.setName("origine");
+  p2.move(p1.getx()-2*5-3, p1.gety());
+  o.print();
+  p2.print();
+  o.clone().print();
+  o.clone().move(54, 36).print();
+  /* Ne compile pas car clone() renvoie statiquement un Point */
+  /* o := o.clone(); */
+  p1 := p1.clone().move(+2, -3); 
+  p1.print();
+  o.clone().print();
+  "test(Point, PointColore, PointNoir)".println();
+  unTest.test(p1, o, pn);
+  "test(PointNoir, PointNoir, PointNoir)".println();
+  unTest.test(pn, pn, pn);
+  p1 := pn;
+  unTest.test2(o);
+  unTest.test2(pn);
+  o := pn;
+
+  "test(PointNoir, PointNoir, PointNoir)".println();
+  unTest.test(p1, o, pn);
+  unTest.test2(o);
+  unTest.test2(pn);
+  "\nDone".println();
+}

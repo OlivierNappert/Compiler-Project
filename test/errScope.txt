@@ -1,0 +1,19 @@
+class Point(xc: Integer, yc: Integer)
+  /* correct, on est dans le constructeur, yc est visible;
+   * y est un champ de la classe donc est aussi visible.
+   */
+  { }
+is {
+  var a : Integer := xc; /* incorrect: xc inconnu ici */
+}
+{
+}
+
+
+/*
+CheckDeclared pour voir si la variable utilisee a gauche a ete init
+dans les var de classe auparavant
+
+Si oui : parcourir les variables de classe, trouver celle avec le même nom
+-> faire une comparaison de type entre cette variable et la nouvelle qu'on declare
+*/

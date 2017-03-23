@@ -1,0 +1,32 @@
+// Instructions
+
+- if
+- else
+- then
+- return
+- as
+
+// Definition des classes
+
+- class
+- is //aussi utiliser pour les methodes
+- extends
+
+// Definition des methodes
+
+- def
+- override
+
+// Declaration d'un champ
+
+- var
+
+// Instanciation
+
+- new
+
+// Identificateurs reserves
+
+- this
+- super
+- result

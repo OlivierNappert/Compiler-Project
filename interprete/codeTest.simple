@@ -1,0 +1,164 @@
+START
+
+-- Création de la table virtuelle pour les fonctions
+ALLOC 3 -- table Mere
+DUPN 1
+PUSHA Mere_setXMere
+STORE 0
+DUPN 1
+PUSHA Mere_getX
+STORE 1
+DUPN 1
+PUSHA Mere_carre
+STORE 2
+
+ALLOC 4 -- table Fille
+DUPN 1
+PUSHA Fille_setXFille
+STORE 0
+
+
+-- Allocation des variables du main
+PUSHI 0 -- a
+PUSHA Mere
+CALL
+PUSHI 0 -- b
+PUSHA Fille
+* CALL
+
+
+-- Lancement des instructions
+-- a.setXMere(3)
+PUSHI 3
+PUSHL 0 -- a
+PUSHA Mere_setXMere
+CALL
+POPN 2
+
+-- b.setXFille(" String ")
+PUSHS " String "
+PUSHL 1 -- b
+PUSHA Fille_setXFille
+CALL
+POPN 2
+
+-- b.setXMere(8)
+PUSHI 8
+PUSHL 1 -- b
+PUSHA Mere_setXMere
+CALL
+POPN 2
+
+
+-- a.getX()
+PUSHI 0 -- Retour
+PUSHL 0 -- a
+PUSHA Mere_getX
+CALL
+POPN 1
+STR     -- .toString()
+
+-- b.getXFille()
+PUSHI 0 -- Retour
+PUSHL 1 -- b
+PUSHA Fille_getXFille
+CALL
+POPN 1
+
+CONCAT -- Concaténation
+
+-- b.getXMere()
+PUSHI 0 -- Retour
+PUSHL 1 -- b
+PUSHA Fille_getXMere
+CALL
+POPN 1
+STR     -- .toString()
+
+CONCAT  -- Concaténation
+
+WRITES  -- println()
+PUSHS "\n"
+WRITES
+
+STOP
+
+
+-- Liste des constructeurs
+Mere: ALLOC 3 -- classe Mere
+DUPN 1
+PUSHI 0
+STORE 0 -- class id
+DUPN 1
+PUSHI 0
+STORE 1 -- x
+DUPN 1
+PUSHI 0
+STORE 2 -- a
+STOREL -1
+RETURN
+
+Fille: ALLOC 6 -- classe Fille
+DUPN 1
+PUSHI 1
+STORE 0 -- class id
+DUPN 1
+PUSHI 0
+STORE 1 -- x
+DUPN 1
+PUSHI 0
+STORE 2 -- a
+DUPN 1
+PUSHS ""
+STORE 3 -- x
+DUPN 1
+PUSHI 0
+PUSHA Mere
+CALL
+STORE 4 -- b
+DUPN 1
+PUSHI 0
+STORE 5
+STOREL -1
+* RETURN
+
+
+-- Liste des fonctions
+Mere_setXMere: PUSHL -1
+PUSHL -2
+STORE 0
+RETURN
+
+Mere_getX: PUSHL -1
+LOAD 0
+STOREL -2
+RETURN
+
+Mere_carre: PUSHL -1
+LOAD 0
+LOAD 0
+MUL
+STOREL -2
+RETURN
+
+
+Fille_setXFille: PUSHL -1
+PUSHL -2
+STORE 2
+RETURN
+
+Fille_getXFille: PUSHL -1
+LOAD 2
+STOREL -2
+RETURN
+
+Fille_getXMere: PUSHL -1 
+LOAD 0
+STOREL -2
+RETURN
+
+Fille_carre: PUSHL -1
+LOAD 0
+LOAD 0
+MUL
+STOREL -2
