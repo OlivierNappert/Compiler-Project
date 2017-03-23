@@ -2,6 +2,8 @@ Compiler Project
 
 Assignment : Design and Implement a Compiler in C for an imaginary OO language similar to Java
 
+Authors : Vincent FABIOUX, Nicolas MONTORO, Olivier NAPPERT and Maxime SAMSON.
+
 How to use
 
 Flex and Bison need to be installed. 
