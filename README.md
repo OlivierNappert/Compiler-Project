@@ -1,4 +1,4 @@
-Compiler Project
+# Compiler Project
 
 Assignment : Design and Implement a Compiler in C for an imaginary OO language similar to Java
 
